@@ -1,0 +1,93 @@
+RAM Allocation
+Variable                                                          Address   Size
+--------------------------------------------------------------------------------
+TX_ADDRESS                                                        0x03C5       5
+RX_ADDRESS                                                        0x03CA       5
+rb                                                                0x03CF      28
+robot11                                                           0x03EB      14
+robot12                                                           0x03F9      14
+robot13                                                           0x0407      14
+robot21                                                           0x0415      14
+robot22                                                           0x0423      14
+robot23                                                           0x0431      14
+robotctrl                                                         0x043F      14
+errangle                                                          0x044D       4
+distance                                                          0x0451       4
+orentation                                                        0x0455       4
+RxBuf                                                             0x0459      32
+setRobotX                                                         0x0479       4
+setRobotY                                                         0x047D       4
+setRobotXmin                                                      0x0481       4
+setRobotXmax                                                      0x0485       4
+setRobotAngleX                                                    0x0489       4
+setRobotAngleY                                                    0x048D       4
+offestsanco                                                       0x0491       4
+rbctrlHomeX                                                       0x0495       4
+rbctrlHomeY                                                       0x0499       4
+rbctrlPenaltyX                                                    0x049D       4
+rbctrlPenaltyY                                                    0x04A1       4
+rbctrlPenaltyAngle                                                0x04A5       4
+rbctrlHomeAngle                                                   0x04A9       4
+cntsethomeRB                                                      0x04AD       2
+cntstuckRB                                                        0x04AF       2
+cntunlookRB                                                       0x04B1       2
+flagsethome                                                       0x04B3       2
+flagselftest                                                      0x04B5       2
+cntselftest                                                       0x04B7       2
+id                                                                0x04B9       1
+IRFL                                                              0x04BA       2
+IRFR                                                              0x04BC       2
+IRLINE                                                            0x04BE      10
+timerstick                                                        0x04C8       2
+timerstickdis                                                     0x04CA       2
+timerstickang                                                     0x04CC       2
+timerstickctr                                                     0x04CE       2
+vQEL                                                              0x04D0       2
+vQER                                                              0x04D2       2
+oldQEL                                                            0x04D4       2
+oldQER                                                            0x04D6       2
+svQEL                                                             0x04D8       2
+svQER                                                             0x04DA       2
+seRki                                                             0x04DC       2
+seLki                                                             0x04DE       2
+uL                                                                0x04E0       2
+uR                                                                0x04E2       2
+KpR                                                               0x04E4       2
+KiR                                                               0x04E6       2
+KpL                                                               0x04E8       2
+KiL                                                               0x04EA       2
+sd                                                                0x04EC       2
+oldd                                                              0x04EE       2
+flagwaitctrRobot                                                  0x04F0       1
+sa                                                                0x04F1       2
+olda                                                              0x04F3       2
+flagwaitctrAngle                                                  0x04F5       1
+flagtask                                                          0x04F6       2
+flagtaskold                                                       0x04F8       2
+flaghuongtrue                                                     0x04FA       2
+verranglekisum                                                    0x04FC       2
+QEL                                                               0x04FE       2
+QER                                                               0x0500       2
+rx_buffer                                                         0x0502       8
+rx_wr_index                                                       0x050A       1
+rx_rd_index                                                       0x050B       1
+rx_counter                                                        0x050C       1
+tx_buffer                                                         0x050D       8
+tx_wr_index                                                       0x0515       1
+tx_rd_index                                                       0x0516       1
+tx_counter                                                        0x0517       1
+_seed                                                             0x0518       4
+
+EEPROM Allocation
+Variable                                                          Address   Size
+--------------------------------------------------------------------------------
+
+Register Allocation
+Variable                                                          Register  Size
+--------------------------------------------------------------------------------
+flagtancong                                                       R4,R5        2
+offsetphongthu                                                    R6,R7        2
+goctancong                                                        R8,R9        2
+cmdCtrlRobot                                                      R10,R11      2
+idRobot                                                           R12,R13      2
+rx_buffer_overflow                                                R2.0      1bit

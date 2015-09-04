@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ROBOTKITBLUE</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_test_machine">Test Machine</string>
+    <string name="discovery_begin">Bluetooth discovery begins&#8230;</string>
+    <string name="ok">Yes</string>
+	<string name="cancel">No</string>
+	<string name="quitBt">Do you want to disable the bluetooth adapter?</string>
+	
+    
+    <string name="TestMachineText">kasjdlkasjldkasjldkasjdlkasjdlkajldksjlaskd12u12123123</string>
+
+    
+    
+    <!-- Bluetooth -->
+    <string name="discover">Searching for Devices...</string>
+    
+    <!-- Liquid Volume Text -->
+    
+    <string name="v1">V1\n</string>
+    <string name="v2">V2\n</string>
+    <string name="v3">V3\n</string>
+    <string name="v4">V4\n</string>
+    <string name="v5">V5\n</string>
+    <string name="v6">V6\n</string>
+    <string name="v7">V7\n</string>
+    <string name="v8">V8\n</string>
+    
+    
+</resources>

@@ -1,0 +1,18 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    
+    <!-- Text size values for Asus Memo HD8. -->
+    <dimen name="asus_large">25sp</dimen>
+    <dimen name="asus_larger">22sp</dimen>
+    <dimen name="asus_medium">18sp</dimen>
+    <dimen name="asus_small">6sp</dimen>
+    
+    <!-- Text size values for Sony Z3. -->
+    <dimen name="sony_large">25sp</dimen>
+    <dimen name="sony_medium">18sp</dimen>
+    <dimen name="sony_small">6sp</dimen>
+
+</resources>

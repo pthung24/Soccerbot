@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Aqua"
+    android:orientation="vertical" >
+
+    <!-- ==================Thanh tiêu đề======================== -->
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="80px"
+        android:background="@drawable/topframe" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="AKBOT"
+                android:textColor="@color/Black"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </FrameLayout>
+    <!-- ===================== Cụm 3 hàng  ========================= -->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@color/Gray" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:background="@color/Aqua"
+            android:orientation="vertical"
+            android:weightSum="3" >
+
+            <!-- =====================Hàng 1 ============================= -->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="10px"
+                android:layout_weight="1"
+                android:background="@color/LightSeaGreen"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:layout_width="160px"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/nut3d_xam"
+                    android:text=""
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/asus_larger"
+                    android:textStyle="bold"
+                    android:typeface="serif" />
+
+                <Button
+                    android:layout_width="160px"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/nut3d_xam"
+                    android:text=" "
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/asus_larger"
+                    android:textStyle="bold"
+                    android:typeface="serif" />
+
+                <Button
+                    android:layout_width="160px"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/nut3d_xam"
+                    android:text=" "
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/asus_larger"
+                    android:textStyle="bold"
+                    android:typeface="serif" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="10px"
+                android:layout_weight="1"
+                android:background="@color/LightSeaGreen"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/btnTrai"
+                    android:layout_width="160px"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/nut3d_xam"
+                    android:text="TRÁI"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/asus_larger"
+                    android:textStyle="bold"
+                    android:typeface="serif" />
+
+                <Button
+                    android:id="@+id/btnToi"
+                    android:layout_width="160px"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/nut3d_xam"
+                    android:text="TỚI"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/asus_larger"
+                    android:textStyle="bold"
+                    android:typeface="serif" />
+
+                <Button
+                    android:id="@+id/btnPhai"
+                    android:layout_width="160px"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/nut3d_xam"
+                    android:text="PHẢI"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/asus_larger"
+                    android:textStyle="bold"
+                    android:typeface="serif" />
+            </LinearLayout>
+
+            <!-- =====================Hàng 2 ============================= -->
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="10px"
+                android:layout_weight="1"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/buttonConvey"
+                    android:layout_width="160px"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/nut3d_xam"
+                    android:text=""
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/asus_larger"
+                    android:textStyle="bold"
+                    android:typeface="serif" />
+
+                <Button
+                    android:id="@+id/btnLui"
+                    android:layout_width="160px"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/nut3d_xam"
+                    android:text="LUI"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/asus_larger"
+                    android:textStyle="bold"
+                    android:typeface="serif" />
+
+                <Button
+                    android:id="@+id/buttonRun"
+                    android:layout_width="160px"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/nut3d_xam"
+                    android:text=""
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/asus_larger"
+                    android:textStyle="bold"
+                    android:typeface="serif" />
+            </LinearLayout>
+
+            <!-- ================ Hàng trượt ngang  ====================== -->
+
+            
+
+            <HorizontalScrollView
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="10px"
+                android:layout_weight="1"
+                android:scrollbars="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal" >
+
+                    <Button
+                        android:id="@+id/btnStartProgress"
+                        android:layout_width="200px"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/nut3d_nau"
+                        android:text=""
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/asus_larger"
+                        android:textStyle="bold"
+                        android:typeface="serif" />
+
+                    <Button
+                        android:id="@+id/buttonTestTable"
+                        android:layout_width="200px"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/nut3d_nau"
+                        android:text=""
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/asus_larger"
+                        android:textStyle="bold"
+                        android:typeface="serif" />
+
+                    <Button
+                        android:layout_width="200px"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/nut3d_nau"
+                        android:text=""
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/asus_larger"
+                        android:textStyle="bold"
+                        android:typeface="serif" />
+
+                    <Button
+                        android:layout_width="200px"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/nut3d_nau"
+                        android:text=""
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/asus_larger"
+                        android:textStyle="bold"
+                        android:typeface="serif" />
+
+                    <Button
+                        android:layout_width="200px"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/nut3d_nau"
+                        android:text=""
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/asus_larger"
+                        android:textStyle="bold"
+                        android:typeface="serif" />
+
+                    <Button
+                        android:layout_width="200px"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/nut3d_nau"
+                        android:text=""
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/asus_larger"
+                        android:textStyle="bold"
+                        android:typeface="serif" />
+
+                    <Button
+                        android:layout_width="200px"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/nut3d_nau"
+                        android:text=""
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/asus_larger"
+                        android:textStyle="bold"
+                        android:typeface="serif" />
+
+                    <Button
+                        android:layout_width="200px"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/nut3d_nau"
+                        android:text=""
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/asus_larger"
+                        android:textStyle="bold"
+                        android:typeface="serif" />
+
+                    <Button
+                        android:id="@+id/buttonPistonout"
+                        android:layout_width="200px"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/nut3d_nau"
+                        android:text=""
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/asus_larger"
+                        android:textStyle="bold"
+                        android:typeface="serif" />
+
+                    <Button
+                        android:id="@+id/buttonPistonin"
+                        android:layout_width="200px"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/nut3d_nau"
+                        android:text=""
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/asus_larger"
+                        android:textStyle="bold"
+                        android:typeface="serif" />
+
+                    <Button
+                        android:id="@+id/buttonSystem"
+                        android:layout_width="200px"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/nut3d_nau"
+                        android:text=""
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/asus_larger"
+                        android:textStyle="bold"
+                        android:typeface="serif" />
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+
+        <!-- ======================== End cụm 3 hàng trượt  ========================= -->
+
+    </FrameLayout>
+
+</LinearLayout>
