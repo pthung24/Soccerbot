@@ -1,9 +1,9 @@
 VERSION:3 SOURCE_TIMESTAMP:46F7BBB7
-NODE:I LEVEL:0 LINE:1 "C:\cvavr2\inc\mega32a.h"
-NODE:I LEVEL:0 LINE:2 "C:\cvavr2\inc\string.h"
+NODE:I LEVEL:0 LINE:1 "c:\cvavr2\inc\mega32a.h"
+NODE:I LEVEL:0 LINE:2 "c:\cvavr2\inc\string.h"
 NODE:I LEVEL:0 LINE:3 "nRF24L01\nRF24L01.h"
-NODE:I LEVEL:0 LINE:4 "C:\cvavr2\inc\delay.h"
-NODE:I LEVEL:0 LINE:5 "C:\cvavr2\inc\spi.h"
+NODE:I LEVEL:0 LINE:4 "c:\cvavr2\inc\delay.h"
+NODE:I LEVEL:0 LINE:5 "c:\cvavr2\inc\spi.h"
 NODE:M LEVEL:0 LINE:7 "CSN"
 NODE:M LEVEL:0 LINE:8 "CE"
 NODE:M LEVEL:0 LINE:9 "SCK"

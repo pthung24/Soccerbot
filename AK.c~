@@ -30,8 +30,13 @@ Data Stack size         : 512
 #include <nRF24L01/nRF24L01.h>
 #include <math.h>
 
+/* Debug mode definition */
+#define DEBUG_MODE 1    // USE OUR CODE, ask Phat for more details
+//#define DEBUG_EN 1      // Blue tooth mode
+
 /* PIN DEFINITION */
 // PIN LED ROBO KIT
+
 #define LEDL	PORTC.4	
 #define LEDR	PORTC.5
 #define LEDFL   PORTA.4
@@ -141,6 +146,8 @@ unsigned int flagunsignalRF=0;
 unsigned int flagsethome=0;
 unsigned int flagselftest = 0;
 unsigned int cntselftest = 0;
+int leftSpeed = 0;
+int rightSpeed = 0;
 
 //======USER VARIABLES=========
 unsigned char id = 1;
@@ -165,6 +172,215 @@ int KpR = 10;
 int KiR = 1;
 int KpL = 10;     
 int KiL = 1;
+#define LDIVR 1
+
+// Robot Control Algorithm
+// The idea is simple. There are two vectors: robot direction (vrb) and robot to target (vdes). 
+// The vector vrb will rotate at an  angle of 'delta' which is equal to the  angle between 2 vectors.
+// So that two vectors will be on a same line and the robot can reach its destination.
+// However, in order to achieve robot's arrival with desired orientation, a new vector (vgoal), which
+// shows the desired orientation, is introduced and added to vrb before the rotation. 
+
+// Return the absolute value
+int absolute(int a) {
+    if (a > 0) return a;
+    return (-a);
+}     
+float min3(float a, float b, float c){
+   	float m = a;
+    if (m > b) m = b;
+    if (m > c) m = c;
+    return m;
+}
+float max3(float a, float b, float c){
+   	float m = a;
+    if (m < b) m = b;
+    if (m < c) m = c;
+    return m;
+}		
+
+void setSpeed(int leftSpeed, int rightSpeed) {
+    // Reset I of both wheel
+    seRki=0;//reset thanh phan I     
+    seLki=0;//reset thanh phan I     
+    
+    // Left speed control
+    if (leftSpeed > 0) { // forward
+        MLdir = 1;        
+    } else {
+        MLdir = 0;
+    }     
+    svQEL = leftSpeed / 9; // Don't know this
+    
+    // Right speed control
+    if (rightSpeed > 0) { // forward
+        MRdir = 1;        
+    } else {
+        MRdir = 0;
+    }     
+    svQER = rightSpeed / 9; // Don't know this
+}    
+
+void kick(int x_des, int y_des, int x_goal, int y_goal, char mode){
+    
+    int vx_des, vy_des, vx_goal, vy_goal;                    // vdes & vgoal coordinates
+    int rb_angle, des_angle, goal_angle, new_angle;       // angles of vrb, vdes, vgoal & (vdes + vgoal) to x-axis
+    int rotation_angle;                           // this is needed to calculate motor velocity    
+    int minimum, maximum;                       //  this is needed to check whether vector a is between vector b and c
+    int wl, wr;        
+    int vx_rb, vy_rb;
+    
+    vx_des = x_des - robotctrl.x;            // vdes calculation
+    vy_des = y_des - robotctrl.y;
+    
+    vx_goal = x_goal - x_des;            //vgoal calculation
+	vy_goal = y_goal - y_des;
+	
+    // Conversion to unit vector
+	if (x_goal== 0)	
+        y_goal = y_goal/absolute(y_goal);
+    else if (y_goal == 0)	
+        x_goal = x_goal/absolute(x_goal);
+    else {
+        y_goal = y_goal/absolute(x_goal);
+        x_goal = x_goal/absolute(x_goal);
+    }
+
+	// Angle calculation
+    goal_angle = atan2(vy_goal,vx_goal);
+    rb_angle = atan2(robotctrl.ox, robotctrl.oy);			// done
+    des_angle = atan2(vy_des,vx_des);
+	
+	// Adding vgoal to vrb 
+    // NEED TESTING
+	vx_rb = robotctrl.ox + vx_goal;
+    vy_rb = robotctrl.oy + vy_goal;
+           
+    new_angle = atan2(vx_rb, vy_rb);
+    rotation_angle = new_angle - des_angle;
+
+	//  *rotation_angle > 180* counter-measure
+    if (rotation_angle < -PI) {
+        rotation_angle = 2*PI + rotation_angle;
+        if (new_angle > des_angle)                
+            rotation_angle = -rotation_angle;
+    }            
+    
+    if (rotation_angle > PI) {
+        rotation_angle = 2*PI - rotation_angle;
+        if (new_angle > des_angle)               
+            rotation_angle = -rotation_angle;
+	}
+
+	// *Spiral* counter-measure: Spiral happens when vdes is between the new vector and vrb
+    minimum = min3(rb_angle, des_angle, new_angle);
+    maximum = max3(rb_angle, des_angle, new_angle);
+        	
+	if (absolute(rb_angle - new_angle)>PI) {
+        if (des_angle == maximum || des_angle == minimum)                
+            rotation_angle = rotation_angle / 15;
+        else if (minimum < des_angle && des_angle < maximum)               
+            rotation_angle = rotation_angle / 15;
+	}
+
+	// Motor speed calculation
+    switch ( mode ) {
+        case 'f': // Going forward			
+            wl = 30 + rotation_angle * 50;
+            wr = 30 - rotation_angle * 50;
+            break;
+        case 'b': // Going backward
+            rotation_angle = -rotation_angle;
+            wl = 30 - rotation_angle * 50;
+            wr = 30 +  rotation_angle * 50;
+            break;
+    }      
+     
+    // Set the speed immediately 
+    leftSpeed = wl;
+    rightSpeed = wr;
+}
+		
+void movePoint(int x_des, int y_des, int angle, char mode){
+	
+	int vx_des, vy_des, vx_goal, vy_goal;	                // vdes & vgoal coordinates
+	int rb_angle, des_angle, goal_angle, new_angle;       // angles of vrb, vdes, vgoal & (vdes + vgoal) to x-axis
+	int rotation_angle;
+	int minimum, maximum;
+    int wl, wr;
+    int vx_rb, vy_rb;
+
+	vx_des = x_des - robotctrl.x;			// vdes calculation
+	vy_des = y_des - robotctrl.y;
+	
+	switch ( angle ) { // vgoal calculation
+		case 0: 	vx_goal = 1 ; vy_goal = 0;break;
+		case 90: 	vx_goal = 0 ; vy_goal = 1;break;
+		case 180: vx_goal = -1 ; vy_goal = 0;break;
+		case -90: vx_goal = 0; vy_goal = -1;break;
+		default:	vx_goal = 1; vy_goal = vx_goal * tan(angle);break;   
+    }
+	
+	// Angle calculation
+    rb_angle = atan2(robotctrl.oy, robotctrl.ox);
+    des_angle = atan2(vy_des,vx_des);
+	
+	// Adding vgoal to vrb
+	vx_rb = robotctrl.ox + vx_goal;
+    vy_rb = robotctrl.oy + vy_goal;
+           
+    new_angle = atan2(vy_rb,vx_rb);
+    rotation_angle = new_angle - des_angle;
+
+	//  *rotation_angle > 180* counter-measure
+        	if (rotation_angle < -PI) {
+            		rotation_angle = 2*PI + rotation_angle;
+            		if (new_angle > des_angle)               rotation_angle = -rotation_angle;
+	}
+                if (rotation_angle > PI) {
+            		rotation_angle = 2*PI - rotation_angle;
+            		if (new_angle > des_angle)                rotation_angle = -rotation_angle;
+	}
+
+	// *SPIral* counter-measure: SPIral happens when vdes is between the new vector and vrb
+        	minimum = min3(rb_angle,des_angle,new_angle);
+        	maximum = max3(rb_angle,des_angle,new_angle);
+        	
+	if (absolute(rb_angle - new_angle)> PI) {
+            		if (des_angle == maximum || des_angle == minimum)                rotation_angle = rotation_angle/15;
+          	else
+            		if (minimum < des_angle && des_angle < maximum)               rotation_angle = rotation_angle/15;
+	}
+
+	// Motor speed calculation
+	switch ( mode ) {
+		case 'f': // Going forward			
+    			wl = 30 + rotation_angle * 50;
+   	 		wr = 30 -  rotation_angle * 50;
+			break;
+    	case 'b': // Going backward
+			rotation_angle = -rotation_angle;
+			wl = 30 - rotation_angle * 50;
+   	 		wr = 30 +  rotation_angle * 50;    
+            break;  
+    }
+	// Set speed for motor   
+    leftSpeed = wl;
+    rightSpeed = wr;
+	// need some function here
+}	
+
+// some function to set speed = 0
+void stop() {
+
+}
+
+void rotate(int angle){
+	angle = angle * LDIVR * 0.5;
+	setSpeed(angle, -angle);				
+}
+
+
 //------POSITION CONTROL-----   
 unsigned int sd=0;// dat khoang cach  di chuyen (xung)
 unsigned int oldd=0;// bien luu gia tri vi tri cu  
@@ -294,9 +510,9 @@ void LEDRtoggle()
 }
 
 /* SPI */
-void spitx(unsigned char temtx)
+void sPItx(unsigned char temtx)
 {
-// unsigned char transpi;
+// unsigned char transPI;
     SPDR = temtx;
     while (!(SPSR & 0x80));
 }
@@ -307,7 +523,7 @@ void LcdWrite(unsigned char dc, unsigned char data)
     DC = dc;
     SCE=1;
     SCE=0;
-    spitx(data);
+    sPItx(data);
     SCE=1;
 }
 //This takes a large array of bits and sends them to the LCD
@@ -442,7 +658,7 @@ void wn16(unsigned int so)
 /* SPI & LCD INIT */
 void SPIinit()
 {
-    SPCR |=1<<SPE | 1<<MSTR;                                         //if spi is used, uncomment this section out
+    SPCR |=1<<SPE | 1<<MSTR;                                         //if sPI is used, uncomment this section out
     SPSR |=1<<SPI2X;
 }
 void LCDinit()
@@ -535,7 +751,7 @@ interrupt [USART_RXC] void usart_rx_isr(void)
         #endif
             rx_buffer_overflow=1;
         }
-    s}
+    }
 }
 
 #ifndef _DEBUG_TERMINAL_IO_
@@ -769,6 +985,7 @@ IntRobot convertRobot2IntRobot(Robot robot)
 //========================================================
 // read  vi tri robot   PHUC
 //========================================================
+/* Comment to return
 unsigned char readposition()
 {
     unsigned char  i=0; 
@@ -815,7 +1032,7 @@ unsigned char readposition()
         }
     }
     return flagstatus;
-}
+}     */
 //========================================================
 // calc  vi tri robot   so voi mot diem (x,y)        PHUC
 // return goclenh va khoang cach, HUONG TAN CONG
@@ -2416,6 +2633,135 @@ void selftest()
      
      }//end while(1)  
 }
+#ifdef DEBUG_EN
+  char debugMsgBuff[32];  
+#endif
+void debug_out(char *pMsg,unsigned char len)
+{
+    #ifdef DEBUG_EN
+    char i=0;
+    for(i=0;i<len;i++)
+    {
+        putchar(*pMsg++);
+        delay_us(300);
+    }
+    #endif
+    return ;
+}
+//[NGUYEN]Set bit and clear bit 
+#define setBit(p,n) ((p) |= (1 << (n)))
+#define clrBit(p,n) ((p) &= (~(1) << (n)))
+
+//[NGUYEN] Update position. 64ms/frame 
+//call setUpdateRate() in MAIN to init.
+char timer2Count=0;
+char posUpdateFlag=0;
+#define distThresh 100
+   
+IntBall oldPos;
+void initPos()
+{
+    oldPos.x = rbctrlHomeX;
+    oldPos.y = rbctrlHomeY;   
+}
+	 
+IntBall estimatePos(IntBall curPos)
+{
+	return curPos;
+}
+
+void updatePosInit()	
+{
+	// Timer/Counter 2 initialization
+	// Clock source: System Clock
+	// Clock value: 7.813 kHz
+	// Mode: CTC top=OCR2
+	// OC2 output: Disconnected
+	ASSR=0x00;
+	TCCR2=0x0F;
+	TCNT2=0x12;
+	OCR2=254;
+	// Timer(s)/Counter(s) Interrupt(s) initialization
+	setBit(TIMSK,OCIE2);
+}
+//[NGUYEN]
+
+interrupt [TIM2_COMP] void timer2_comp_isr(void)
+{
+    unsigned char i=0;
+    LEDRtoggle();
+    if (timer2Count++<2)
+         return;
+    else
+    {
+        timer2Count=0;  
+    }  
+                              	
+                                    
+        if(nRF24L01_RxPacket(RxBuf)==1)         // Neu nhan duoc du lieu
+        {  
+         IntRobot intRb;
+         for( i=0;i<28;i++)
+         {
+             *(uint8_t *) ((uint8_t *)&rb + i)=RxBuf[i];
+         }
+          
+          
+         idRobot = fmod(rb.id,10); // doc id 
+         cmdCtrlRobot = (int)rb.id/10; // doc ma lenh
+                       
+         intRb = convertRobot2IntRobot(rb);
+         
+         switch (idRobot)
+         {
+              case 1:
+                robot11=intRb;                  
+                break;
+              case 2:
+                robot12=intRb;                  
+                break;
+              case 3: 
+                robot13=intRb;                 
+                break;
+              case 4:
+                robot21=intRb;                
+                break;
+              case 5:
+                robot22=intRb;                  
+                break;
+              case 6:
+                robot23=intRb;                  
+                break;
+
+         } 
+         if(idRobot==ROBOT_ID)
+         {
+             LEDL=!LEDL;   
+             cmdCtrlRobot = (int)rb.id/10; // doc ma lenh          
+             posUpdateFlag=1;
+			 robotctrl=intRb;
+            if((robotctrl.x - oldPos.x >= distThresh)|| (robotctrl.y - oldPos.y >= distThresh))
+			 {
+				IntBall estPos;
+				IntBall curPos;
+				curPos.x = robotctrl.x;
+				curPos.y = robotctrl.y;
+				estPos = estimatePos(curPos);
+				robotctrl.x = estPos.x;
+				robotctrl.y = estPos.y;
+				
+			 }
+			 oldPos.x = robotctrl.x;
+			 oldPos.y = robotctrl.y;
+		}
+                       
+     }
+}
+unsigned char readposition()
+{
+    return;
+}
+
 //========================================================
 //          HAM MAIN
 //========================================================
@@ -2424,7 +2770,7 @@ void main(void)
     unsigned char flagreadrb;
     unsigned int adctest;
     unsigned char i;
-    float pidl,pidr,pl,il,pr,ir,ur,ul;
+    float PIdl,PIdr,pl,il,pr,ir,ur,ul;
 
     //------------- khai  bao chuc nang in out cua cac port
     DDRA    = 0xFF;
@@ -2486,6 +2832,12 @@ void main(void)
     initencoder(); //lay 2 canh len  xuong
     // khai bao su dung uart
     inituart();
+    
+    // Set interrupt timer 2
+    updatePosInit();
+    // Set for oldPos variable
+    initPos();       
+    
     #asm("sei")
     
     //man hinh khoi dong robokit
@@ -2517,6 +2869,8 @@ void main(void)
     // code you here
     while (1)
     {  
+        #ifdef !DEBUG_MODE    
+        {
      //LEDR=!LEDR;
      //PHUC
 ////     //=========================================================   PHUC ID
@@ -2555,11 +2909,30 @@ void main(void)
              setRobotY = robotctrl.ball.y;  
              rb_wait(200);
              rb_goball();
-             rb_wait(200);
-           
-            
+             rb_wait(200);   
         }
-        ctrrobot();// can phai luon luon chay de dieu khien robot
+        ctrrobot();// can phai luon luon chay de dieu khien robot   
+        }
+        #else  
+        {       
+            
+	        #ifdef DEBUG_EN   
+            {
+                char dbgLen;      
+                // left speed
+                dbgLen=sprintf(debugMsgBuff,"Left Speed: %d \n\r", leftSpeed);
+                debug_out(debugMsgBuff,dbgLen);
+         
+                dbgLen=sprintf(debugMsgBuff,"Right Speed: %d \n\n\r", rightSpeed);
+                debug_out(debugMsgBuff,dbgLen);
+            }
+            #endif  
+            
+            movePoint(0, 0, 0, 'f');
+            setSpeed(leftSpeed, rightSpeed);
+             
+        }
+        #endif
      } //end while(1)
 }
 
