@@ -34,6 +34,10 @@ Data Stack size         : 512
 #define DEBUG_MODE 1    // USE OUR CODE, ask Phat for more details
 //#define DEBUG_EN 1      // Blue tooth mode
 
+/* For Dat */
+#define VBASE 15
+#define KMOVE 25
+
 /* PIN DEFINITION */
 // PIN LED ROBO KIT
 
@@ -209,17 +213,19 @@ void setSpeed(int leftSpeed, int rightSpeed) {
         MLdir = 1;        
     } else {
         MLdir = 0;
+        leftSpeed = -leftSpeed;
     }     
-    svQEL = leftSpeed / 9; // Don't know this
+    svQEL = leftSpeed; // Don't know this
     
     // Right speed control
     if (rightSpeed > 0) { // forward
         MRdir = 1;        
     } else {
         MRdir = 0;
+        rightSpeed = -rightSpeed;
     }     
-    svQER = rightSpeed / 9; // Don't know this
-}    
+    svQER = rightSpeed;
+}
 
 void kick(int x_des, int y_des, int x_goal, int y_goal, char mode){
     
@@ -301,7 +307,7 @@ void kick(int x_des, int y_des, int x_goal, int y_goal, char mode){
     rightSpeed = wr;
 }
 		
-void movePoint(int x_des, int y_des, int angle, char mode){
+void movePoint(IntRobot rbctrl, int x_des, int y_des, int angle, char mode){
 	
 	int vx_des, vy_des, vx_goal, vy_goal;	                // vdes & vgoal coordinates
 	int rb_angle, des_angle, goal_angle, new_angle;       // angles of vrb, vdes, vgoal & (vdes + vgoal) to x-axis
@@ -309,9 +315,13 @@ void movePoint(int x_des, int y_des, int angle, char mode){
 	int minimum, maximum;
     int wl, wr;
     int vx_rb, vy_rb;
+    int dirx, diry;
 
-	vx_des = x_des - robotctrl.x;			// vdes calculation
-	vy_des = y_des - robotctrl.y;
+	vx_des = x_des - rbctrl.x;			// vdes calculation
+	vy_des = y_des - rbctrl.y;         
+    
+    dirx = rbctrl.ox - rbctrl.x;
+    diry = rbctrl.oy - rbctrl.y;
 	
 	switch ( angle ) { // vgoal calculation
 		case 0: 	vx_goal = 1 ; vy_goal = 0;break;
@@ -322,12 +332,12 @@ void movePoint(int x_des, int y_des, int angle, char mode){
     }
 	
 	// Angle calculation
-    rb_angle = atan2(robotctrl.oy, robotctrl.ox);
+    rb_angle = atan2(diry, dirx);
     des_angle = atan2(vy_des,vx_des);
 	
 	// Adding vgoal to vrb
-	vx_rb = robotctrl.ox + vx_goal;
-    vy_rb = robotctrl.oy + vy_goal;
+	vx_rb = dirx + vx_goal;
+    vy_rb = diry + vy_goal;
            
     new_angle = atan2(vy_rb,vx_rb);
     rotation_angle = new_angle - des_angle;
@@ -355,13 +365,13 @@ void movePoint(int x_des, int y_des, int angle, char mode){
 	// Motor speed calculation
 	switch ( mode ) {
 		case 'f': // Going forward			
-    			wl = 30 + rotation_angle * 50;
-   	 		wr = 30 -  rotation_angle * 50;
+    			wl = VBASE + rotation_angle * KMOVE;
+   	 		wr = VBASE -  rotation_angle * KMOVE;
 			break;
     	case 'b': // Going backward
 			rotation_angle = -rotation_angle;
-			wl = 30 - rotation_angle * 50;
-   	 		wr = 30 +  rotation_angle * 50;    
+			wl = VBASE - rotation_angle * KMOVE;
+   	 		wr = VBASE +  rotation_angle * KMOVE;    
             break;  
     }
 	// Set speed for motor   
@@ -2767,10 +2777,21 @@ unsigned char readposition()
 //========================================================
 void main(void)
 {
+    // For Testing purpose only, creating a fake robot
+    IntRobot rbFake;
     unsigned char flagreadrb;
     unsigned int adctest;
     unsigned char i;
     float PIdl,PIdr,pl,il,pr,ir,ur,ul;
+    
+    // Testing robot declaration
+    rbFake.id = 4; 
+    rbFake.x = -42;
+    rbFake.y = 48;
+    rbFake.ox = -35;
+    rbFake.oy = -50;   
+    rbFake.ball.x = 0;
+    rbFake.ball.y = 0;
 
     //------------- khai  bao chuc nang in out cua cac port
     DDRA    = 0xFF;
@@ -2865,8 +2886,10 @@ void main(void)
     // vao chuong trinh chinh sau khi bo qua phan selftest   
     hc(2,0);
     ws("MAIN PROGRAM");
-    settoadoHomRB();
-    // code you here
+    settoadoHomRB(); 
+    
+    // code you here  
+    
     while (1)
     {  
         #ifdef !DEBUG_MODE    
@@ -2928,7 +2951,7 @@ void main(void)
             }
             #endif  
             
-            movePoint(0, 0, 0, 'f');
+            movePoint(robotctrl, 0, 0, 0, 'f');
             setSpeed(leftSpeed, rightSpeed);
              
         }
