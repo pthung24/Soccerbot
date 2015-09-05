@@ -36,8 +36,7 @@ Data Stack size         : 512
 
 /* PIN DEFINITION */
 // PIN LED ROBO KIT
-
-//Hung comment a xamlin thing
+//test lai
 
 #define LEDL	PORTC.4	
 #define LEDR	PORTC.5
