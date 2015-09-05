@@ -2,7 +2,7 @@
 This program was produced by the
 CodeWizardAVR V2.05.0 Evaluation
 Automatic Program Generator
-© Copyright 1998-2010 Pavel Haiduc, HP InfoTech s.r.l.
+ï¿½ Copyright 1998-2010 Pavel Haiduc, HP InfoTech s.r.l.
 http://www.hpinfotech.com
 
 Project :
@@ -36,6 +36,8 @@ Data Stack size         : 512
 
 /* PIN DEFINITION */
 // PIN LED ROBO KIT
+
+//Hung comment a xamlin thing
 
 #define LEDL	PORTC.4	
 #define LEDR	PORTC.5
@@ -472,7 +474,7 @@ flash unsigned char ASCII[][5] = {
 	, { 0x07, 0x08, 0x70, 0x08, 0x07 } // 59 Y
 	, { 0x61, 0x51, 0x49, 0x45, 0x43 } // 5a Z
 	, { 0x00, 0x7f, 0x41, 0x41, 0x00 } // 5b [
-	, { 0x02, 0x04, 0x08, 0x10, 0x20 } // 5c ¥
+	, { 0x02, 0x04, 0x08, 0x10, 0x20 } // 5c ï¿½
 	, { 0x00, 0x41, 0x41, 0x7f, 0x00 } // 5d ]
 	, { 0x04, 0x02, 0x01, 0x02, 0x04 } // 5e ^
 	, { 0x40, 0x40, 0x40, 0x40, 0x40 } // 5f _
